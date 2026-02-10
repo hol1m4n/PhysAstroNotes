@@ -1,6 +1,6 @@
 library(data.table)
 
-pop1 = read.table("/home/torrespapaqui/CursoR/Semana02/LMC_distance_Pop1.dat", header = TRUE)
+pop1 = read.table("/home/hollman/PhysAstroNotes/AstroStatistics with R/Semana02/LMC_distance_Pop1.dat", header = TRUE)
 
 yy = seq(1,13,by=1)
 
@@ -49,3 +49,8 @@ abline(v=m4[2],lty=2,col="red")
 abline(v=m4[4],lty=2,col="red")
 abline(v=mpref+mpsig,lty=2,col="blue")
 abline(v=mpref-mpsig,lty=2,col="blue")
+
+
+
+
+

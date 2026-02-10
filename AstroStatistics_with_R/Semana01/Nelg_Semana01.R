@@ -1,3 +1,5 @@
+setwd("/home/hollman/PhysAstroNotes/AstroStatistics with R/Semana01")
+
 require(GGally)
 
 data(flea)
@@ -39,4 +41,19 @@ mydata01$IC[result03]
 summary(mydata01$IC[result01])
 summary(mydata01$IC[result02])
 summary(mydata01$IC[result03])
+
+
+mydata01$groups <- factor(
+  ifelse(mydata01$Morp == "S0"  | mydata01$Morp == "S0a", "early",
+         ifelse(mydata01$Morp == "Sa"  | mydata01$Morp == "Sab" | mydata01$Morp == "Sb",
+                "early spiral",
+                "late spiral"))
+)
+
+
+table(mydata01$groups)
+
+library(GGally)
+scatmat(mydata01, columns = 7:9, color = "groups")
+
 
