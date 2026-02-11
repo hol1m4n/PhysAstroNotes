@@ -1,6 +1,6 @@
 library(data.table)
 
-pop1 = read.table("/home/hollman/PhysAstroNotes/AstroStatistics with R/Semana02/LMC_distance_Pop1.dat", header = TRUE)
+pop1 = read.table("/home/hollman/PhysAstroNotes/AstroStatistics_with_R/Semana02/LMC_distance_Pop1.dat", header = TRUE)
 
 yy = seq(1,13,by=1)
 

@@ -44,3 +44,16 @@ ggMarginal(p, type = "histogram", groupColour = TRUE, groupFill = TRUE)
 
 # Marginal density by group
 ggMarginal(p, groupColour = TRUE, groupFill = TRUE)
+
+
+setwd('~/PhysAstroNotes/AstroStatistics_with_R/Semana03/')
+
+Gal_data = read.csv("Figure08_Glowacki.csv", header = TRUE)
+
+Scat_plt <- ggplot(Gal_data, aes(x = DfGas, y = DsSFR)) + geom_point()  # scatter of galaxies
+
+#ggMarginal(Scat_plt, type="densigram", size = 3)
+ggMarginal(Scat_plt, size = 3)
+
+
+

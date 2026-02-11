@@ -1,6 +1,6 @@
 library(data.table)
 
-setwd('/home/holman/Downloads/Semana03')
+setwd('~/PhysAstroNotes/AstroStatistics_with_R/Semana03/')
 
 hubble = read.table("HubbleConstants.dat", header = TRUE)
 
@@ -162,7 +162,7 @@ d00s = hubble$Ho[(hubble$Year >= 2000) & (hubble$Year < 2010) ]
 d10s = hubble$Ho[(hubble$Year >= 2010) ]
 
 boxplot(d50s,d60s,d70s,d80s,d90s,d00s,d10s,
-        names = c("50s","60s","70s","80s","90s","00s","10s"))
+        names = c("Cincuentas","Sesentas","Setentas","Ochentas","Noventas","Dosmiles","Dos mil diez"))
 
 
 # Tarea, reproducir la figura 8 del paper de Symbad y el grafico de los boxplots por anyo
