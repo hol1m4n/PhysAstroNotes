@@ -1,0 +1,19 @@
+Semana 05
+
+Reproducir los resultados del articulo a partir de las tablas.
+Ver si existe correlacion entre las columnas.
+Buscar correlacion, p-value, usar tablas de simbologia.
+Tabla 6 del articulo.
+
+N_Edd -> LosBulEdd
+M_BH -> losM_BH
+L_AGN -> LS100
+B -> beta
+T -> T
+SFR -> W1W2
+
+4 Graficos para cada grupo de datos.
+
+
+
+
