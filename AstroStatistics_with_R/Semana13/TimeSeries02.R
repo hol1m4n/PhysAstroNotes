@@ -1,0 +1,208 @@
+#The age of death of 42 successive kings of England
+kings <- scan("Data/kings.dat",skip=3)
+kings
+
+kingstimeseries <- ts(kings)
+kingstimeseries
+
+plot.ts(kingstimeseries)
+
+#Decomposing Time Series
+#Decomposing a time series means separating it into its constituent components,
+#which are usually a trend component and an irregular component, and if it is a 
+#seasonal time series, a seasonal component.
+library("TTR")
+
+#Smooth time series data using a simple moving average
+kingstimeseriesSMA3 <- SMA(kingstimeseries,n=3)
+plot.ts(kingstimeseriesSMA3)
+
+kingstimeseriesSMA8 <- SMA(kingstimeseries,n=8)
+plot.ts(kingstimeseriesSMA8)
+
+#Differencing a Time Series
+#ARIMA models are defined for stationary time series. Therefore, if you start off
+#with a non-stationary time series, you will first need to ‘difference’ the time 
+#series until you obtain a stationary time series. If you have to difference the 
+#time series d times to obtain a stationary series, then you have an ARIMA(p,d,q) 
+#model, where d is the order of differencing used.
+kingtimeseriesdiff1 <- diff(kingstimeseries, differences=1)
+
+plot.ts(kingtimeseriesdiff1)
+
+#Selecting a Candidate ARIMA Model
+#If your time series is stationary, or if you have transformed it to a stationary 
+#time series by differencing d times, the next step is to select the appropriate 
+#ARIMA model, which means finding the values of most appropriate values of p and q 
+#for an ARIMA(p,d,q) model. To do this, you usually need to examine the correlogram 
+#and partial correlogram of the stationary time series.
+
+acf(kingtimeseriesdiff1, lag.max=20)             # plot a correlogram
+acf(kingtimeseriesdiff1, lag.max=20, plot=FALSE) # get the autocorrelation values
+
+pacf(kingtimeseriesdiff1, lag.max=20)             # plot a partial correlogram
+pacf(kingtimeseriesdiff1, lag.max=20, plot=FALSE) # get the partial autocorrelation values
+
+# fit an ARIMA(0,1,1) model
+kingstimeseriesarima <- arima(kingstimeseries, order=c(0,1,2)) 
+kingstimeseriesarima
+
+# load the "forecast" R library
+library('forecast')
+
+checkresiduals(kingstimeseriesarima)
+autoplot(forecast(kingstimeseriesarima))
+
+kingstimeseriesforecasts <- forecast(kingstimeseriesarima, h=5)
+kingstimeseriesforecasts
+
+plot(kingstimeseriesforecasts)
+
+##########################################################################
+
+#The number of births per month in New York city, from January 1946 to December 1959
+births <- scan("Data/nybirths.dat")
+births
+
+birthstimeseries <- ts(births, frequency=12, start=c(1946,1))
+birthstimeseries
+
+plot.ts(birthstimeseries)
+
+#Decomposing Seasonal Data
+#A seasonal time series consists of a trend component, a seasonal component and an
+#irregular component. Decomposing the time series means separating the time series 
+#into these three components: that is, estimating these three components.
+birthstimeseriescomponents <- decompose(birthstimeseries)
+
+birthstimeseriescomponents$seasonal
+
+plot(birthstimeseriescomponents)
+
+#Seasonally Adjusting
+#If you have a seasonal time series that can be described using an additive model,
+#you can seasonally adjust the time series by estimating the seasonal component, 
+#and subtracting the estimated seasonal component from the original time series.
+birthstimeseriescomponents <- decompose(birthstimeseries)
+
+birthstimeseriesseasonallyadjusted <- birthstimeseries - birthstimeseriescomponents$seasonal
+
+plot(birthstimeseriesseasonallyadjusted)
+
+acf(birthstimeseriesseasonallyadjusted)
+acf(birthstimeseriesseasonallyadjusted,lag.max=20)
+acf(birthstimeseriesseasonallyadjusted,lag.max=40)
+acf(birthstimeseriesseasonallyadjusted,lag.max=60)
+acf(birthstimeseriesseasonallyadjusted,lag.max=80)
+
+pacf(birthstimeseriesseasonallyadjusted)
+pacf(birthstimeseriesseasonallyadjusted,lag.max=20)
+pacf(birthstimeseriesseasonallyadjusted,lag.max=40)
+pacf(birthstimeseriesseasonallyadjusted,lag.max=60)
+pacf(birthstimeseriesseasonallyadjusted,lag.max=80)
+
+library('forecast')
+
+# fit an ARIMA(0,1,1) model
+birthstimeseriesarima <- arima(birthstimeseriesseasonallyadjusted, order=c(0,1,1)) 
+birthstimeseriesarima
+
+checkresiduals(birthstimeseriesarima)
+autoplot(forecast(birthstimeseriesarima))
+
+##########################################################################
+
+data(AirPassengers)
+
+AP <- AirPassengers
+AP
+
+class(AP)
+
+start(AP); end(AP); frequency(AP)
+
+#The first step in time series data modeling using R is to convert the 
+#available data into time series data format. To do so we need to run 
+#the following command in R:
+tsData = ts(AP, start = c(1949,1), frequency = 12)
+
+#We can use the following R code to find out the components of this time series:
+#1.- Observed – the actual data plot
+#2.- Trend – the overall upward or downward movement of the data points
+#3.- Seasonal – any monthly/yearly pattern of the data points
+#4.- Random – unexplainable part of the data
+components.ts = decompose(tsData)
+plot(components.ts)
+
+#Various plots and functions that help in detecting seasonality:
+#1.- A seasonal subseries plot
+#2.- Multiple box plot
+#3.- Auto correlation plot
+#4.- ndiffs() is used to determine the number of first differences 
+#required to make the time series non-seasonal
+library("fUnitRoots")
+urkpssTest(tsData, type = c("tau"), lags = c("short"),use.lag = NULL, doplot = TRUE)
+tsstationary = diff(tsData, differences=1)
+plot(tsstationary)
+
+#R codes to calculate autocorrelation:
+acf(tsData,lag.max=34) 
+
+#To remove seasonality from the data, we subtract the seasonal component 
+#from the original series and then difference it to make it stationary.
+timeseriesseasonallyadjusted <- tsData - components.ts$seasonal
+tsstationary <- diff(timeseriesseasonallyadjusted, differences=1)
+plot(tsstationary)
+
+#Once the data is ready and satisfies all the assumptions of modeling, to 
+#determine the order of the model to be fitted to the data, we need three 
+#variables: p, d, and q which are non-negative integers that refer to the 
+#order of the autoregressive, integrated, and moving average parts of the 
+#model respectively.
+#To examine which p and q values will be appropriate we need to run acf() 
+#and pacf() function.
+#pacf() at lag k is autocorrelation function which describes the correlation 
+#between all data points that are exactly k steps apart- after accounting 
+#for their correlation with the data between those k steps. It helps to 
+#identify the number of autoregression (AR) coefficients(p-value) in an 
+#ARIMA model.
+acf(tsstationary, lag.max=34)
+pacf(tsstationary, lag.max=34)
+
+#"order" specifies the non-seasonal part of the ARIMA model: (p, d, q) refers 
+#to the AR order, the degree of difference, and the MA order.
+#"seasonal" specifies the seasonal part of the ARIMA model, plus the period 
+#(which defaults to frequency(x) i.e 12 in this case). This function requires 
+#a list with components order and period, but given a numeric vector of 
+#length 3, it turns them into a suitable list with the specification as the 
+#‘order’.
+#"method" refers to the fitting method, which can be ‘maximum likelihood(ML)’ 
+#or ‘minimize conditional sum-of-squares(CSS)’. The default is 
+#conditional-sum-of-squares.
+fitARIMA <- arima(tsData, order=c(1,1,1),seasonal = list(order = c(1,0,0), period = 12),method="ML")
+
+auto.arima(tsData, trace=TRUE)
+
+fitARIMA <- arima(tsData, order=c(2,1,1),seasonal = list(order = c(0,1,0), period = 12),method="ML")
+
+library(lmtest)
+coeftest(fitARIMA) 
+
+#We can use a function confint() for this purpose.
+confint(fitARIMA)
+
+acf(fitARIMA$residuals)
+
+#library(FitAR)
+#boxresult<-LjungBoxTest(fitARIMA$residuals,k=2,StartLag=1)
+#plot(boxresult[,3],main= "Ljung-Box Q Test", ylab= "P-values", xlab= "Lag")
+#qqnorm(fitARIMA$residuals)
+#qqline(fitARIMA$residuals)
+
+predict(fitARIMA,n.ahead = 5)
+futurVal <- forecast(fitARIMA,h=10, level=c(99.5))
+plot(futurVal)
+
+predict(fitARIMA,n.ahead = 12)
+futurVal <- forecast(fitARIMA,h=10, level=c(99.5))
+plot(futurVal,col="red")
