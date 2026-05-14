@@ -1,5 +1,5 @@
 library(data.table)
-dataBH = fread("/home/holman/PhysAstroNotes/AstroStatistics_with_R/Semana04/Dullo_MBH.dat")
+dataBH = fread("/home/holman/PhysAstroNotes/AstroStatistics_with_R/Semana04/Dist_incl.dat")
 
 deltam = dataBH$mFUV - dataBH$m36
 
@@ -62,3 +62,42 @@ abline(lm(dataBH$MBH[samplearly] ~ deltamearly))
 points(deltamlate,dataBH$MBH[samplelate], col="blue")
 abline(lm(dataBH$MBH[samplelate] ~ deltamlate),col="blue")
 
+# Tarea 4
+# Empezamos desde aqui la reproduccion de las figuras del articulo
+
+
+dataBH = fread("/home/holman/PhysAstroNotes/AstroStatistics_with_R/Semana04/Dist_incl.dat")
+
+# Set layout to 1 row, 2 columns
+par(mfrow = c(1, 2))
+
+# para comparar, vamos a plotear la figura 2.a primero
+deltam = dataBH$mFUV - dataBH$m36
+
+x1 = deltam < 5
+x2 = deltam >= 5
+
+plot(deltam[x1],dataBH$MBH[x1],ylim=c(4.0,10.0),xlim=c(1.0,8.0), xlab="m_FUV - m_3.6", ylab="M_BH/M_solar")
+abline(lm(dataBH$MBH[x1]~deltam[x1]))
+points(deltam[x2],dataBH$MBH[x2],col="red")
+abline(lm(dataBH$MBH[x2]~deltam[x2]),col="red")
+
+# La figura 2.b
+deltam = dataBH$mNUV - dataBH$m36
+
+x1 = deltam < 5
+x2 = deltam >= 5
+
+plot(deltam[x1],dataBH$MBH[x1],ylim=c(4.0,10.0),xlim=c(1.0,8.0), xlab="m_NUV - m_3.6", ylab="M_BH/M_solar")
+abline(lm(dataBH$MBH[x1]~deltam[x1]))
+points(deltam[x2],dataBH$MBH[x2],col="red")
+abline(lm(dataBH$MBH[x2]~deltam[x2]),col="red")
+
+dataBH_new = fread("/home/holman/PhysAstroNotes/AstroStatistics_with_R/Semana04/Dist_incl.dat")
+
+par(mfrow = c(1, 1))
+
+plot(dataBH_new$M3.6m, dataBH$MBH, 
+     xlim = c(-18,-23), xlab = "M3.6m", ylab = "M_BH")
+
+abline(lm(dataBH_new$MBH~dataBH_new$M3.6m),col="red")
