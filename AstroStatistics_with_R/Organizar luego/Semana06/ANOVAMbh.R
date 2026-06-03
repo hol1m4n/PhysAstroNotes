@@ -1,4 +1,4 @@
-mydata = read.table("~/Downloads/Semana06/nelg2_R.dat",h=T)
+mydata = read.table("nelg2_R.dat",h=T)
 attach(mydata)
 
 library(multcomp)
